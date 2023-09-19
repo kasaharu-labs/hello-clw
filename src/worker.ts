@@ -27,7 +27,7 @@ export interface Env {
 
 export default {
 	async fetch(request: Request, env: Env, ctx: ExecutionContext): Promise<Response> {
-		const body = JSON.stringify('Hello Cloudflare Workers!');
+		const body = JSON.stringify({ message: 'Hello Cloudflare Workers!' });
 		const res = new Response(body, { headers: { 'content-type': 'text/json' } });
 		res.headers.set('Access-Control-Allow-Method', 'GET');
 		res.headers.set('Access-Control-Allow-Origin', '*');
