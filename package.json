@@ -4,7 +4,9 @@
   "private": true,
   "scripts": {
     "deploy": "wrangler deploy",
-    "start": "wrangler dev"
+    "start": "wrangler dev",
+    "database:apply:dev": "wrangler d1 execute hello-clw-db --local --file=./schema.sql",
+    "database:apply:prod": "wrangler d1 execute hello-clw-db --file=./schema.sql"
   },
   "devDependencies": {
     "@cloudflare/workers-types": "^4.20230419.0",
