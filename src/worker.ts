@@ -9,6 +9,7 @@
  */
 
 export interface Env {
+	DB: D1Database;
 	// Example binding to KV. Learn more at https://developers.cloudflare.com/workers/runtime-apis/kv/
 	// MY_KV_NAMESPACE: KVNamespace;
 	//
@@ -26,12 +27,31 @@ export interface Env {
 }
 
 export default {
-	async fetch(request: Request, env: Env, ctx: ExecutionContext): Promise<Response> {
-		const body = JSON.stringify({ message: 'Hello Cloudflare Workers!' });
-		const res = new Response(body, { headers: { 'content-type': 'text/json' } });
-		res.headers.set('Access-Control-Allow-Method', 'GET');
-		res.headers.set('Access-Control-Allow-Origin', '*');
+	async fetch(request: Request, env: Env) {
+		const { pathname } = new URL(request.url);
 
-		return res;
+		if (pathname === '/api/customers') {
+			const { results } = await env.DB.prepare('SELECT * FROM Customers').all();
+			const res = Response.json(results);
+			res.headers.set('Access-Control-Allow-Method', 'GET');
+			res.headers.set('Access-Control-Allow-Origin', '*');
+			return res;
+		}
+
+		// if (pathname === '/api/beverages') {
+		// 	// If you did not use `DB` as your binding name, change it here
+		// 	const { results } = await env.DB.prepare('SELECT * FROM Customers WHERE CompanyName = ?').bind('Bs Beverages').all();
+		// 	return Response.json(results);
+		// }
+
+		return new Response('Call /api/customers to see everyone');
 	},
+
+	// async fetch(request: Request, env: Env, ctx: ExecutionContext): Promise<Response> {
+	// 	const body = JSON.stringify({ message: 'Hello Cloudflare Workers!' });
+	// 	const res = new Response(body, { headers: { 'content-type': 'text/json' } });
+	// 	res.headers.set('Access-Control-Allow-Method', 'GET');
+	// 	res.headers.set('Access-Control-Allow-Origin', '*');
+	// 	return res;
+	// },
 };
